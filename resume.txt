@@ -1,0 +1,61 @@
+Aakash Thatte
+BTech (2020-2024)
+Data Science and Artificial Intelligence
+Indian Institute of Technology, Bhilai
+
+
+Education
+Indian Institute of Technology, Bhilai
+2020-2024
+Bachelor of Technology, Data Science and Artificial Intelligence
+CGPA: 8.78/10
+Experience
+Google Summer of Code Contributor @ DBpedia
+
+
+Neural Extraction Framework
+Wikipedia contains a lot of information in the infoboxes and text. This can be used to populate knowledge bases.
+Task was to extract relational triples from wikipedia text instead of just the infoboxes.
+Contributed the first end-2-end neural framework to extract relational triples from text.
+Performed benchmarking and evaluation of GENRE, DBpedia lookup and a custom redis-db based entity linking
+methods. Used REBEL for relation extraction and vector similarity for relation mapping. Found and reported
+issues of REBEL and embedding similarity with negation sentences.
+Needl AI
+Machine Learning Intern
+Financial documents like annual reports contain lot of tables with loads of information. These go un-extracted
+due to text based IE methods.
+Task was to extract these tables as pandas dataframes so as to make use of them in fact checking, QA, IE etc.
+Applied DL with UnstructuredIO and custom methods to explore performance of and models like detectron2,
+microsoft table transformers, google document AI etc.
+Deployed an app to internally evaluate models for table detection, structure-recognition and OCR. Integrated
+Nanonets and amazon-textract APIs for table extraction. With this, users can get all tables with a button click.
+Weaviate
+March 2022 - July 2022
+Open source contributor
+In very high dimensions euclidean and higher metrics can badly affect the similarity measures.
+Added manhattan and hamming distance metrics to weaviate vector database version v1.15 by co-ordinating with
+their engineers. Added five example applications using weaviate inlcuding a multi-modal search, attendence system,
+QA etc.
+Personal Projects
+Approx-KNN for GNN pre-training
+Contributed approximate-knn graph code to PyTorch-Geometric
+Used an approx-KNN graph based pre-training for GNNs. Contributed it to pytorch geometric.
+Sentence classification in medical abstracts
+Applied NLP to the PubMed RCT dataset to classify sentences as part of "result", "conclusion" etc. Tribrid of
+different embeddings gave 6% more accuracy and 6.33% increase in F1-Score than individual ones.
+
+Experimented with different explainability methods for GNNs
+Tools, technologies & algorithms used: Explainability, subgraph selection, Integrated gradients, PyG
+Read research papers to explore GNN explainability, covering subgraph, concept and motif based methods.
+
+Assignments and projects for CS550, Machine learning
+Performed taxi fare and life expectancy prediction using KNN, SGD, closed form etc. vehicle classification using
+SVM, XGBoost, Random forest etc. and compared different approaches.
+Skills and Interests
+Languages/Dev tools: Python, Git, Docker
+ML Frameworks and tools: PyTorch, PyTorch-Geometric, HuggingFace, Spacy
+Coursework: Advanced ML, ML, NLP, Data analytics, DBMS, Prob and Stats, Linear Algebra
+Areas of Interest: NLP, open source, documenting my learnings
+Soft skills: I like discussing and talking to people from different backgrounds and understand perspectives.
+
+Inter IIT Sports Meet, Represented IIT Bhilai in the Badminton Team
