@@ -5,6 +5,7 @@ from marqo_analytics.utility import (
     get_tensors_from_ids,
     get_hover_data_from_ids
 )
+import sklearn.cluster as cluster
 
 def dimension_reduced_tensors(
         reducer: umap.umap_.UMAP, 
@@ -33,7 +34,8 @@ def dimension_reduce(mq,
                      reducer: umap.umap_.UMAP =None, 
                      target_dim: int =2, 
                      visualize: bool =False,
-                     inline_output: bool =False
+                     inline_output: bool =False,
+                     num_clusters: int =None
                      ) -> numpy.ndarray:
     """A function to perform dimensionality reduction on the tensors in a particular
     index and for a particular attribute. It also visualizes the reduced tensors if needed
@@ -50,6 +52,8 @@ def dimension_reduce(mq,
         return them. Defaults to False.
         inline_output (bool, optional): If working in a notebook, where
         you want to see the results there itself, set this to true. Defaults to False.
+        num_clusters(int, optional): If specified, clustering will be performed and visualization
+        will include color coding as per them, for better insights.
 
     Returns:
         numpy.ndarray: The dimension reduced tensors.
@@ -81,7 +85,11 @@ def dimension_reduce(mq,
             if inline_output:
                 umap.plot.output_notebook()
 
-            p = umap.plot.interactive(_mapper, hover_data=_hover_data, point_size=6)
+            if num_clusters is not None:
+                _kmeans_labels = cluster.KMeans(n_clusters=num_clusters).fit_predict(_dim_reduced_tensors)
+                p = umap.plot.interactive(_mapper, hover_data=_hover_data, point_size=6, labels=_kmeans_labels)
+            else:
+                p = umap.plot.interactive(_mapper, hover_data=_hover_data, point_size=6)
             umap.plot.show(p)
     
     return _dim_reduced_tensors
