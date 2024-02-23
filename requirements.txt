@@ -1,4 +1,4 @@
-marqo==2.0.0
+marqo==3.1.0
 streamlit
 nltk==3.8.1
 numpy==1.23.5

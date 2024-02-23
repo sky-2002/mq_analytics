@@ -10,6 +10,7 @@ from marqo_analytics.utility import (
     get_hover_data_from_ids
 )
 import sklearn.cluster as cluster
+import streamlit as st
 
 def plot_embeddings(reduced_embedding, color_by=None, hover_data=None, interactive=True, title=None):
     d = pd.DataFrame(columns=["x", "y", "label"])
@@ -36,9 +37,9 @@ def plot_embeddings(reduced_embedding, color_by=None, hover_data=None, interacti
             plt.title(title)
     return fig
 
-
+@st.cache_data
 def dimension_reduced_tensors(
-        reducer: umap.umap_.UMAP, 
+        _reducer: umap.umap_.UMAP, 
         tensors: np.ndarray
         ) -> np.ndarray:
     """A function to perform dimensionality reduciton on
@@ -53,20 +54,22 @@ def dimension_reduced_tensors(
         tuple(umap.umap_.UMAP, numpy.ndarray): Returns the UMAP object fit on the tensors along with
         the dimension reduced tensors.
     """
-    mapper = reducer.fit(tensors)
+    mapper = _reducer.fit(tensors)
     reduced_embedding = mapper.transform(tensors)
     return mapper, reduced_embedding
 
-def dimension_reduce(mq, 
+@st.cache_data
+def dimension_reduce(_mq, 
                      index_name: str,
                      attribute: str,
                      marqo_search_results: dict =None, 
-                     reducer: umap.umap_.UMAP =None, 
+                     _reducer: umap.umap_.UMAP =None, 
                      target_dim: int =2, 
                      visualize: bool =False,
                      inline_output: bool =False,
                      num_clusters: int =None,
                      color_by=None,
+                     limit=5,
                      ) -> np.ndarray:
     """A function to perform dimensionality reduction on the tensors in a particular
     index and for a particular attribute. It also visualizes the reduced tensors if needed
@@ -89,21 +92,21 @@ def dimension_reduce(mq,
     Returns:
         numpy.ndarray: The dimension reduced tensors.
     """
+    marqo_search_results = marqo_search_results
     if marqo_search_results is None:
-        marqo_search_results = mq.index(index_name).search(
+        marqo_search_results = _mq.index(index_name).search(
             "Dummy Search",
-            limit=1000
+            limit=limit
         )
     assert marqo_search_results!=None
 
     _ids = get_ids_from_results(marqo_search_results)
-    _tensors = get_tensors_from_ids(mq, _ids, index_name, attribute)
-    
-    if reducer is None:
+    _tensors = get_tensors_from_ids(_mq, _ids, index_name, attribute)
+    if _reducer is None:
         import umap
         _reducer = umap.UMAP(n_components=target_dim)
     else:
-        _reducer = reducer
+        _reducer = _reducer
     
     _mapper, _dim_reduced_tensors = dimension_reduced_tensors(_reducer, _tensors)
     assert _dim_reduced_tensors.shape[1]==target_dim
@@ -112,7 +115,7 @@ def dimension_reduce(mq,
     if visualize:
         if target_dim in [2,3]:
             import umap.plot as upl
-            _hover_data = get_hover_data_from_ids(mq, _ids, index_name)
+            _hover_data = get_hover_data_from_ids(_mq, _ids, index_name)
 
             if inline_output:
                 upl.output_notebook()
