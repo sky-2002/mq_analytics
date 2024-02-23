@@ -1,5 +1,9 @@
 import umap
-import numpy
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import plotly.express as px
+import seaborn as sns
 from marqo_analytics.utility import (
     get_ids_from_results,
     get_tensors_from_ids,
@@ -7,10 +11,36 @@ from marqo_analytics.utility import (
 )
 import sklearn.cluster as cluster
 
+def plot_embeddings(reduced_embedding, color_by=None, hover_data=None, interactive=True, title=None):
+    d = pd.DataFrame(columns=["x", "y", "label"])
+    d['x'] = reduced_embedding[:, 0]
+    d['y'] = reduced_embedding[:, 1]
+    d = pd.concat([d, hover_data], axis=1)
+    
+    shape = reduced_embedding.shape
+    if shape[-1]==3:
+        d['z'] = reduced_embedding[:, 2]
+
+    fig = None
+    if interactive:
+        if shape[-1]==3:
+            fig = px.scatter_3d(data_frame=d, x='x', y='y', z='z', color=color_by, title=title, hover_data=d.columns)
+        else:
+            fig = px.scatter(data_frame=d, x='x', y='y', color=color_by, title=title, hover_data=d.columns)
+    else:
+        if shape[-1]==3:
+            raise ValueError("Currently 3D only in interactive mode")
+        else:
+            fig = plt.figure()
+            sns.scatterplot(d, hue='label', x='x', y='y')
+            plt.title(title)
+    return fig
+
+
 def dimension_reduced_tensors(
         reducer: umap.umap_.UMAP, 
-        tensors: numpy.ndarray
-        ) -> numpy.ndarray:
+        tensors: np.ndarray
+        ) -> np.ndarray:
     """A function to perform dimensionality reduciton on
     the supplied tensors/embeddings. Currently using UMAP for 
     dimensionality reduction.
@@ -35,8 +65,9 @@ def dimension_reduce(mq,
                      target_dim: int =2, 
                      visualize: bool =False,
                      inline_output: bool =False,
-                     num_clusters: int =None
-                     ) -> numpy.ndarray:
+                     num_clusters: int =None,
+                     color_by=None,
+                     ) -> np.ndarray:
     """A function to perform dimensionality reduction on the tensors in a particular
     index and for a particular attribute. It also visualizes the reduced tensors if needed
     to aid in visualization tasks.
@@ -67,7 +98,7 @@ def dimension_reduce(mq,
 
     _ids = get_ids_from_results(marqo_search_results)
     _tensors = get_tensors_from_ids(mq, _ids, index_name, attribute)
-
+    
     if reducer is None:
         import umap
         _reducer = umap.UMAP(n_components=target_dim)
@@ -77,19 +108,26 @@ def dimension_reduce(mq,
     _mapper, _dim_reduced_tensors = dimension_reduced_tensors(_reducer, _tensors)
     assert _dim_reduced_tensors.shape[1]==target_dim
 
+    figure = None
     if visualize:
         if target_dim in [2,3]:
-            import umap.plot
+            import umap.plot as upl
             _hover_data = get_hover_data_from_ids(mq, _ids, index_name)
 
             if inline_output:
-                umap.plot.output_notebook()
+                upl.output_notebook()
 
             if num_clusters is not None:
                 _kmeans_labels = cluster.KMeans(n_clusters=num_clusters).fit_predict(_dim_reduced_tensors)
-                p = umap.plot.interactive(_mapper, hover_data=_hover_data, point_size=6, labels=_kmeans_labels)
+                # p = upl.interactive(_mapper, hover_data=_hover_data, point_size=6, labels=_kmeans_labels)
+                # p = interactive_plotly(_mapper, hover_data=_hover_data, point_size=6, labels=_kmeans_labels)
+                p = plot_embeddings(_dim_reduced_tensors, hover_data=_hover_data, color_by=color_by)
+                figure = p
             else:
-                p = umap.plot.interactive(_mapper, hover_data=_hover_data, point_size=6)
-            umap.plot.show(p)
+                # p = upl.interactive(_mapper, hover_data=_hover_data, point_size=6)
+                # p = interactive_plotly(_mapper, hover_data=_hover_data, point_size=6)
+                p = plot_embeddings(_dim_reduced_tensors, hover_data=_hover_data, color_by=color_by)
+            # umap.plot.show(p)
+                figure = p
     
-    return _dim_reduced_tensors
+    return figure, _dim_reduced_tensors
