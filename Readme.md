@@ -5,6 +5,12 @@
 - `DR_demo.ipynb` notebook contains code to add sample data and visualize it using dimensionality reduction.
 - The dimensionality reduction technique currently used is [`umap`](https://github.com/lmcinnes/umap).
 
+### Demo
+
+https://github.com/sky-2002/mq_analytics/assets/84656834/6f9e4617-3256-4269-8124-50c006916c03
+
+
+
 #### Installing dependencies
 - Run `pip install -r requirements.txt` to install the required packages. 
 - For UMAP, run `pip install https://github.com/lmcinnes/umap/archive/master.zip` to install from latest master.
