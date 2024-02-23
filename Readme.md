@@ -15,10 +15,12 @@
 
 **Pull image**:
 - Run `sudo docker pull marqoai/marqo:latest` to pull latest image(marqo version 2.2.0).
-- Run `sudo docker run --name <container-name> --privileged -p 8882:8882 --add-host host.docker.internal:host-gateway \
+- Run 
+```
+sudo docker run --name <container-name> --privileged -p 8882:8882 --add-host host.docker.internal:host-gateway \
 -e MARQO_MODELS_TO_PRELOAD='[]' \  <!-- Specify if any models needed -->
 marqoai/marqo:latest <!-- Image name and tag -->
-`
+```
 
 Note - For older versions of marqo, use `marqoai/marqo:1.5.0` image, basically change the tag.
 
