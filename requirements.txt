@@ -11,3 +11,5 @@ colorcet
 bokeh
 holoviews
 scikit-image
+plotly
+seaborn
